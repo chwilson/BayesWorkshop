@@ -1,2 +1,2 @@
-# BayesWorkshop-
+# BayesWorkshop
 Class Materials 
