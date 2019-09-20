@@ -61,3 +61,41 @@ ggplot(MCdf) + stat_density(aes(x=skew)) + geom_vline(aes(xintercept=500),color 
 
 
 
+# Sigmoidal simulation 
+error <- 1
+Tt <- 100 
+N <- rep(NA,Tt);
+N[1] <- 1; 
+K <- 500; 
+r <- 0.1; 
+for(i in 2:Tt){
+  N[i] = N[i-1] + r*N[i-1]*(1-(N[i-1]/K))
+}
+M = N + rnorm(Tt,0,error)
+
+plot(seq(1,Tt,1),M)
+
+Nsub <- N[55:75]
+
+diff(Nsub)
+# r_hat
+(4/K)*mean(diff(Nsub)) # 0.092
+
+# r_hat SE 
+4/(K*sqrt(length(diff(Nsub)))) # 0.018 
+
+log_data <- list(N = Tt, y = N);
+log_model <- stan(file = "logistic_Bayes.stan", data = log_data, chains = 4, iter = 500)
+print(log_model,digits = 4)
+
+
+
+curve(dgamma(x,shape = 1, rate = 0.1),0,10)
+curve(dexp(x,rate=0.1),0,10,col=2,add=T)
+
+curve((2+1)/(0.5+x),0,50)
+curve(6*exp(-4*x),0,10,col=2,add=T)
+
+
+
+
